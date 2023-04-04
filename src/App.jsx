@@ -1,7 +1,13 @@
+import Landing from './pages/Landing';
+
 import React from 'react';
 
 function App() {
-  return <h1>Jobster</h1>;
+  return (
+    <div>
+      <Landing />
+    </div>
+  );
 }
 
 export default App;
