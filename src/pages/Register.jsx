@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormRow, Logo } from '../components';
 import { toast } from 'react-toastify';
 import Wrapper from '../assets/wrappers/RegisterPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, registerUser } from '../features/user/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const initialState = {
   name: '',
@@ -14,6 +15,7 @@ const initialState = {
 
 const Register = () => {
   const [values, setValues] = useState(initialState);
+  const navigate = useNavigate();
 
   const { isLoading, user } = useSelector(store => store.user);
   const dispatch = useDispatch();
@@ -26,7 +28,7 @@ const Register = () => {
   const handleSubmit = e => {
     e.preventDefault();
     const { name, email, password, isMember } = values;
-    if (!email || !password || (isMember && !name)) {
+    if (!email || !password || (!isMember && !name)) {
       toast.error('please fill out all fields');
       return;
     }
@@ -40,6 +42,14 @@ const Register = () => {
   const toggleMember = () => {
     setValues({ ...values, isMember: !values.isMember });
   };
+
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+    }
+  }, [user, navigate]);
 
   return (
     <Wrapper className='full-page'>
@@ -69,12 +79,12 @@ const Register = () => {
           value={values.password}
           handleChange={handleChange}
         />
-        <button type='submit' className='btn btn-block'>
-          submit
+        <button type='submit' className='btn btn-block' disabled={isLoading}>
+          {isLoading ? 'Loading...' : 'Submit'}
         </button>
         <p>
           {values.isMember ? 'Not a member yet?' : 'Already a member?'}
-          <button onClick={toggleMember} className='member-btn'>
+          <button type='button' onClick={toggleMember} className='member-btn'>
             {values.isMember ? 'Register' : 'Login'}
           </button>
         </p>
