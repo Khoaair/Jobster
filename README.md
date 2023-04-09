@@ -294,11 +294,11 @@ function Register() {
 
   // redux toolkit and useNavigate later
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     console.log(e.target);
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = e => {
     e.preventDefault();
     console.log(e.target);
   };
@@ -422,14 +422,14 @@ return (
 Register.js
 
 ```js
-const handleChange = (e) => {
+const handleChange = e => {
   const name = e.target.name;
   const value = e.target.value;
   console.log(`${name}:${value}`);
   setValues({ ...values, [name]: value });
 };
 
-const onSubmit = (e) => {
+const onSubmit = e => {
   e.preventDefault();
   const { name, email, password, isMember } = values;
   if (!email || !password || (!isMember && !name)) {
@@ -798,7 +798,7 @@ export const loginUser = createAsyncThunk(
 - utils/localStorage.js
 
 ```js
-export const addUserToLocalStorage = (user) => {
+export const addUserToLocalStorage = user => {
   localStorage.setItem('user', JSON.stringify(user));
 };
 
@@ -976,7 +976,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Navbar = () => {
-  const { user } = useSelector((store) => store.user);
+  const { user } = useSelector(store => store.user);
   const dispatch = useDispatch();
 
   return (
@@ -1126,7 +1126,7 @@ import { toggleSidebar, logoutUser } from '../features/user/userSlice';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 const ProtectedRoute = ({ children }) => {
-  const { user } = useSelector((store) => store.user);
+  const { user } = useSelector(store => store.user);
   if (!user) {
     return <Navigate to='/landing' />;
   }
@@ -1256,7 +1256,7 @@ import { NavLink } from 'react-router-dom';
 
 return (
   <div className='nav-links'>
-    {links.map((link) => {
+    {links.map(link => {
       const { text, path, id, icon } = link;
 
       return (
@@ -1307,7 +1307,7 @@ import links from '../utils/links';
 const NavLinks = ({ toggleSidebar }) => {
   return (
     <div className='nav-links'>
-      {links.map((link) => {
+      {links.map(link => {
         const { text, path, id, icon } = link;
 
         return (
@@ -1348,7 +1348,7 @@ import Wrapper from '../assets/wrappers/BigSidebar';
 import { useSelector } from 'react-redux';
 
 const BigSidebar = () => {
-  const { isSidebarOpen } = useSelector((store) => store.user);
+  const { isSidebarOpen } = useSelector(store => store.user);
   return (
     <Wrapper>
       <div
@@ -1505,7 +1505,7 @@ Profile.js
 ```js
 import { updateUser } from '../../features/user/userSlice';
 
-const handleSubmit = (e) => {
+const handleSubmit = e => {
   e.preventDefault();
   const { name, email, lastName, location } = userData;
 
@@ -1696,10 +1696,10 @@ const AddJob = () => {
     statusOptions,
     isEditing,
     editJobId,
-  } = useSelector((store) => store.job);
+  } = useSelector(store => store.job);
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
 
     if (!position || !company || !jobLocation) {
@@ -1707,7 +1707,7 @@ const AddJob = () => {
       return;
     }
   };
-  const handleJobInput = (e) => {
+  const handleJobInput = e => {
     const name = e.target.name;
     const value = e.target.value;
   };
@@ -1869,7 +1869,7 @@ AddJob.js
 ```js
 import { handleChange } from '../../features/job/jobSlice';
 
-const handleJobInput = (e) => {
+const handleJobInput = e => {
   const name = e.target.name;
   const value = e.target.value;
   dispatch(handleChange({ name, value }));
@@ -1967,7 +1967,7 @@ import {
   createJob,
 } from '../../features/job/jobSlice';
 
-const handleSubmit = (e) => {
+const handleSubmit = e => {
   e.preventDefault();
 
   if (!position || !company || !jobLocation) {
@@ -1984,7 +1984,7 @@ const handleSubmit = (e) => {
 AddJob.js
 
 ```js
-const { user } = useSelector((store) => store.user);
+const { user } = useSelector(store => store.user);
 
 useEffect(() => {
   // eventually will check for isEditing
@@ -2123,7 +2123,7 @@ import Wrapper from '../assets/wrappers/JobsContainer';
 import { useSelector, useDispatch } from 'react-redux';
 
 const JobsContainer = () => {
-  const { jobs, isLoading } = useSelector((store) => store.allJobs);
+  const { jobs, isLoading } = useSelector(store => store.allJobs);
   const dispatch = useDispatch();
 
   if (isLoading) {
@@ -2146,7 +2146,7 @@ const JobsContainer = () => {
     <Wrapper>
       <h5>jobs info</h5>
       <div className='jobs'>
-        {jobs.map((job) => {
+        {jobs.map(job => {
           return <Job key={job._id} {...job} />;
         })}
       </div>
@@ -2604,7 +2604,7 @@ export const editJob = createAsyncThunk('job/editJob', editJobThunk);
 jobThunk.js
 
 ```js
-const authHeader = (thunkAPI) => {
+const authHeader = thunkAPI => {
   return {
     headers: {
       authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
@@ -2628,7 +2628,7 @@ export const createJobThunk = async (job, thunkAPI) => {
 - create utils/authHeader.js
 
 ```js
-const authHeader = (thunkAPI) => {
+const authHeader = thunkAPI => {
   return {
     headers: {
       authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
@@ -2658,7 +2658,7 @@ const customFetch = axios.create({
 });
 
 customFetch.interceptors.request.use(
-  (config) => {
+  config => {
     const user = getUserFromLocalStorage();
     if (user) {
       config.headers['Authorization'] = `Bearer ${user.token}`;
@@ -2667,7 +2667,7 @@ customFetch.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
@@ -2759,7 +2759,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { showStats } from '../../features/allJobs/allJobsSlice';
 const Stats = () => {
   const { isLoading, monthlyApplications } = useSelector(
-    (store) => store.allJobs
+    store => store.allJobs
   );
   const dispatch = useDispatch();
   useEffect(() => {
@@ -2792,7 +2792,7 @@ import { FaSuitcaseRolling, FaCalendarCheck, FaBug } from 'react-icons/fa';
 import Wrapper from '../assets/wrappers/StatsContainer';
 import { useSelector } from 'react-redux';
 const StatsContainer = () => {
-  const { stats } = useSelector((store) => store.allJobs);
+  const { stats } = useSelector(store => store.allJobs);
   const defaultStats = [
     {
       title: 'pending applications',
@@ -2868,7 +2868,7 @@ import Wrapper from '../assets/wrappers/ChartsContainer';
 import { useSelector } from 'react-redux';
 const ChartsContainer = () => {
   const [barChart, setBarChart] = useState(true);
-  const { monthlyApplications: data } = useSelector((store) => store.allJobs);
+  const { monthlyApplications: data } = useSelector(store => store.allJobs);
   return (
     <Wrapper>
       <h4>Monthly Applications</h4>
@@ -2978,11 +2978,11 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const SearchContainer = () => {
   const { isLoading, search, searchStatus, searchType, sort, sortOptions } =
-    useSelector((store) => store.allJobs);
-  const { jobTypeOptions, statusOptions } = useSelector((store) => store.job);
+    useSelector(store => store.allJobs);
+  const { jobTypeOptions, statusOptions } = useSelector(store => store.job);
   const dispatch = useDispatch();
-  const handleSearch = (e) => {};
-  const handleSubmit = (e) => {
+  const handleSearch = e => {};
+  const handleSubmit = e => {
     e.preventDefault();
   };
   return (
@@ -3061,11 +3061,11 @@ SearchContainer.js
 ```js
 import { handleChange, clearFilters } from '../features/allJobs/allJobsSlice';
 
-const handleSearch = (e) => {
+const handleSearch = e => {
   if (isLoading) return;
   dispatch(handleChange({ name: e.target.name, value: e.target.value }));
 };
-const handleSubmit = (e) => {
+const handleSubmit = e => {
   e.preventDefault();
   dispatch(clearFilters());
 };
@@ -3098,7 +3098,7 @@ JobsContainer
 
 ```js
 const { jobs, isLoading, page, totalJobs, numOfPages } = useSelector(
-  (store) => store.allJobs
+  store => store.allJobs
 );
 
 return (
@@ -3107,7 +3107,7 @@ return (
       {totalJobs} job{jobs.length > 1 && 's'} found
     </h5>
     <div className='jobs'>
-      {jobs.map((job) => {
+      {jobs.map(job => {
         return <Job key={job._id} {...job} />;
       })}
     </div>
@@ -3125,7 +3125,7 @@ import { HiChevronDoubleLeft, HiChevronDoubleRight } from 'react-icons/hi';
 import Wrapper from '../assets/wrappers/PageBtnContainer';
 import { useSelector, useDispatch } from 'react-redux';
 const PageBtnContainer = () => {
-  const { numOfPages, page } = useSelector((store) => store.allJobs);
+  const { numOfPages, page } = useSelector(store => store.allJobs);
   const dispatch = useDispatch();
 
   const pages = Array.from({ length: numOfPages }, (_, index) => {
@@ -3140,7 +3140,7 @@ const PageBtnContainer = () => {
         prev
       </button>
       <div className='btn-container'>
-        {pages.map((pageNumber) => {
+        {pages.map(pageNumber => {
           return (
             <button
               type='button'
@@ -3205,7 +3205,7 @@ const prevPage = () => {
 
 return (
   <div className='btn-container'>
-    {pages.map((pageNumber) => {
+    {pages.map(pageNumber => {
       return (
         <button
           type='button'
@@ -3258,7 +3258,7 @@ const {
   searchStatus,
   searchType,
   sort,
-} = useSelector((store) => store.allJobs);
+} = useSelector(store => store.allJobs);
 
 useEffect(() => {
   dispatch(getAllJobs());
@@ -3281,7 +3281,7 @@ reducers:{
 SearchContainer.js
 
 ```js
-const handleSearch = (e) => {
+const handleSearch = e => {
   if (isLoading) return;
   dispatch(handleChange({ name: e.target.name, value: e.target.value }));
 };
@@ -3295,7 +3295,7 @@ const handleSearch = (e) => {
 ```js
 import customFetch from '../../utils/axios';
 
-export const getAllJobsThunk = async (thunkAPI) => {
+export const getAllJobsThunk = async thunkAPI => {
   const { page, search, searchStatus, searchType, sort } =
     thunkAPI.getState().allJobs;
 
@@ -3569,7 +3569,7 @@ import { useState, useMemo } from 'react';
 const SearchContainer = () => {
   const [localSearch, setLocalSearch] = useState('');
 
-  const handleSearch = (e) => {
+  const handleSearch = e => {
     dispatch(handleChange({ name: e.target.name, value: e.target.value }));
   };
 
@@ -3583,7 +3583,7 @@ const SearchContainer = () => {
             type='text'
             name='search'
             value={localSearch}
-            handleChange={(e) => setLocalSearch(e.target.value)}
+            handleChange={e => setLocalSearch(e.target.value)}
           />
           // ...rest of the code
         </div>
@@ -3602,13 +3602,13 @@ import { useState, useMemo } from 'react';
 const SearchContainer = () => {
   const [localSearch, setLocalSearch] = useState('');
 
-  const handleSearch = (e) => {
+  const handleSearch = e => {
     dispatch(handleChange({ name: e.target.name, value: e.target.value }));
   };
 
   const debounce = () => {
     let timeoutID;
-    return (e) => {
+    return e => {
       setLocalSearch(e.target.value);
       clearTimeout(timeoutID);
       timeoutID = setTimeout(() => {
@@ -3617,7 +3617,7 @@ const SearchContainer = () => {
     };
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     setLocalSearch('');
     dispatch(clearFilters());
