@@ -1,7 +1,119 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { FormRow, FormRowSelect } from '../../components';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
+import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import userSlice from '../../features/user/userSlice';
+import {
+  clearValue,
+  createJob,
+  handleChange,
+} from '../../features/job/jobSlice';
 
 const AddJob = () => {
-  return <h1>AddJob</h1>;
+  const {
+    isLoading,
+    position,
+    company,
+    jobLocation,
+    jobType,
+    jobTypeOptions,
+    status,
+    statusOptions,
+    isEditting,
+    editJobId,
+  } = useSelector(store => store.job);
+
+  const { user } = useSelector(store => store.user);
+
+  useEffect(() => {
+    if (!isEditting) {
+      dispatch(handleChange({ name: 'jobLocation', value: user.location }));
+    }
+  }, []);
+
+  const dispatch = useDispatch();
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (!position || !company || !jobLocation) {
+      toast.error('Please fill out all fields');
+      return;
+    }
+    dispatch(createJob({ position, company, jobLocation, jobType, status }));
+  };
+
+  const handleJobInput = e => {
+    const name = e.target.name;
+    const value = e.target.value;
+    dispatch(handleChange({ name, value }));
+  };
+
+  return (
+    <Wrapper>
+      <form className='form'>
+        <h3>{isEditting ? 'edit job' : 'add job'}</h3>
+        <div className='form-center'>
+          {/* position */}
+          <FormRow
+            type='text'
+            name='position'
+            value={position}
+            handleChange={handleJobInput}
+          />
+          {/* company */}
+          <FormRow
+            type='text'
+            name='company'
+            value={company}
+            handleChange={handleJobInput}
+          />
+          {/* job location */}
+          <FormRow
+            type='text'
+            name='jobLocation'
+            value={jobLocation}
+            labelText='job location'
+            handleChange={handleJobInput}
+          />
+          {/* status */}
+          <FormRowSelect
+            name='status'
+            value={status}
+            handleChange={handleJobInput}
+            list={statusOptions}
+          />
+          {/* job stype */}
+          <FormRowSelect
+            name='jobType'
+            lableText='job type'
+            value={jobType}
+            handleChange={handleJobInput}
+            list={jobTypeOptions}
+          />
+          <div className='btn-container'>
+            <button
+              type='button'
+              className='btn btn-block clear-btn'
+              onClick={() => {
+                dispatch(clearValue());
+              }}
+            >
+              clear
+            </button>
+            <button
+              type='submit'
+              className='btn btn-block submit-btn'
+              onClick={handleSubmit}
+              disabled={isLoading}
+            >
+              submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </Wrapper>
+  );
 };
 
 export default AddJob;
