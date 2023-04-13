@@ -15,7 +15,6 @@ const Profile = () => {
     lastName: user?.lastName || '',
     location: user?.location || '',
   });
-  console.log(userData);
 
   const { name, email, lastName, location } = userData;
   const handleSubmit = e => {

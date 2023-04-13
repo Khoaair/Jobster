@@ -7,6 +7,7 @@ import userSlice from '../../features/user/userSlice';
 import {
   clearValue,
   createJob,
+  editJob,
   handleChange,
 } from '../../features/job/jobSlice';
 
@@ -20,14 +21,14 @@ const AddJob = () => {
     jobTypeOptions,
     status,
     statusOptions,
-    isEditting,
+    isEditing,
     editJobId,
   } = useSelector(store => store.job);
 
   const { user } = useSelector(store => store.user);
 
   useEffect(() => {
-    if (!isEditting) {
+    if (!isEditing) {
       dispatch(handleChange({ name: 'jobLocation', value: user.location }));
     }
   }, []);
@@ -38,6 +39,15 @@ const AddJob = () => {
     e.preventDefault();
     if (!position || !company || !jobLocation) {
       toast.error('Please fill out all fields');
+      return;
+    }
+    if (isEditing) {
+      dispatch(
+        editJob({
+          jobId: editJobId,
+          job: { position, company, jobLocation, jobType, status },
+        })
+      );
       return;
     }
     dispatch(createJob({ position, company, jobLocation, jobType, status }));
@@ -52,7 +62,7 @@ const AddJob = () => {
   return (
     <Wrapper>
       <form className='form'>
-        <h3>{isEditting ? 'edit job' : 'add job'}</h3>
+        <h3>{isEditing ? 'edit job' : 'add job'}</h3>
         <div className='form-center'>
           {/* position */}
           <FormRow

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import customFetch from '../../utils/axios';
-import jobSlice from '../job/jobSlice';
+import authHeader from '../../utils/authHeader';
 
 const initialFiltersState = {
   search: '',
@@ -26,15 +26,13 @@ export const getAllJobs = createAsyncThunk(
   'allJobs/getJobs',
   async (_, thunkAPI) => {
     let url = `/jobs`;
+
     try {
-      const resp = await customFetch.get(url, {
-        headers: {
-          Authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
-        },
-      });
+      const resp = await customFetch.get(url, authHeader(thunkAPI));
+
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue('There was an error ');
+      return thunkAPI.rejectWithValue(error.response.data.msg);
     }
   }
 );
