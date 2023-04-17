@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import customFetch from '../../utils/axios';
 import authHeader from '../../utils/authHeader';
+import { getAllJobsThunk, showStatsThunk } from './allJobsThunk';
 
 const initialFiltersState = {
   search: '',
@@ -22,23 +23,12 @@ const initialState = {
   ...initialFiltersState,
 };
 
-export const getAllJobs = createAsyncThunk(
-  'allJobs/getJobs',
-  async (_, thunkAPI) => {
-    let url = `/jobs`;
+export const getAllJobs = createAsyncThunk('allJobs/getJobs', getAllJobsThunk);
 
-    try {
-      const resp = await customFetch.get(url, authHeader(thunkAPI));
-
-      return resp.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.msg);
-    }
-  }
-);
+export const showStats = createAsyncThunk('allJobs/showStats', showStatsThunk);
 
 const allJobSlice = createSlice({
-  name: 'allJob',
+  name: 'allJobs',
   initialState,
   reducers: {
     showLoading: state => {
@@ -46,6 +36,16 @@ const allJobSlice = createSlice({
     },
     hideLoading: state => {
       state.isLoading = false;
+    },
+    handleChange: (state, { payload: { name, value } }) => {
+      state.page = 1;
+      state[name] = value;
+    },
+    clearFilter: state => {
+      return { ...state, ...initialFiltersState };
+    },
+    changePage: (state, { payload }) => {
+      state.page = payload;
     },
   },
   extraReducers: builder => {
@@ -55,13 +55,33 @@ const allJobSlice = createSlice({
     builder.addCase(getAllJobs.fulfilled, (state, { payload }) => {
       state.isLoading = false;
       state.jobs = payload.jobs;
+      state.numOfPages = payload.numOfPages;
+      state.totalJobs = payload.totalJobs;
     });
     builder.addCase(getAllJobs.rejected, (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    });
+    builder.addCase(showStats.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(showStats.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.stats = payload.defaultStats;
+      state.monthlyApplications = payload.monthlyApplications;
+    });
+    builder.addCase(showStats.rejected, (state, { payload }) => {
       state.isLoading = false;
       toast.error(payload);
     });
   },
 });
 
-export const { showLoading, hideLoading } = allJobSlice.actions;
+export const {
+  showLoading,
+  hideLoading,
+  handleChange,
+  clearFilter,
+  changePage,
+} = allJobSlice.actions;
 export default allJobSlice.reducer;
