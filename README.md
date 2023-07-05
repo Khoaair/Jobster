@@ -21,6 +21,9 @@ This application will help HR find suitable candidates, as well as candidates to
 - Find many jobs related to your expertise.
 - Create jobs to recruit suitable employees.
 
+## Application website
+https://jobster-react-project.vercel.app/
+
 ## Development
 
 ---
